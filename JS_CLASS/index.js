@@ -11,3 +11,19 @@ User.prototype.sayHi = function () {
 const user = new User('GUOHANG')
 
 user.sayHi()
+
+// ES6 Class 创建对象
+
+class NewUser {
+  constructor(name) {
+    this.name = name
+  }
+
+  sayHi() {
+    console.log(this.name)
+  }
+}
+
+const user1 = new NewUser('James')
+
+user1.sayHi()
