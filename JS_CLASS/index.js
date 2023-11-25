@@ -102,3 +102,64 @@ rabbit.run()
 // 背後運作的原理是，JavaScript Engine會幫你把 Rabbit.prototype 的 [[Prototype]] 設為 Animal.prototype，
 
 // 亦即 Rabbit.prototype.__proto__ = Animal.prototype;
+
+// 使用 Class来封装axios示例
+import axios from 'axios'
+class RequestInstance {
+  constructor() {
+    const service = axios.create({
+      baseURL: process.env.REACT_APP_API_URL,
+      timeout: 60000
+    })
+    // 全局请求拦截
+    service.interceptors.request.use(
+      config => {
+        if (window.sessionStorage.getItem('token')) config['token'] = window.sessionStorage.getItem('token')
+        return config
+      },
+      err => {
+        return err
+      }
+    )
+
+    service.interceptors.response.use(
+      res => {
+        return res
+      },
+      err => {
+        return err
+      }
+    )
+    this.eventStatus = {}
+    this.service = service
+  }
+  addEventStatus(key) {
+    this.eventStatus[key] = true
+  }
+  removeEventStatus(key) {
+    delete eventStatus.key
+  }
+  hasEventStatus(key) {
+    return Boolean(this.eventStatus[key])
+  }
+  request(config, eventStatus) {
+    if (this.hasEventStatus(eventStatus)) return '请求进行中'
+    return new Promise((resolve, reject) => {
+      this.addEventStatus(eventStatus)
+      this.service(config)
+        .then(res => {
+          resolve(res)
+        })
+        .catch(err => {
+          reject(err)
+        })
+        .finally(() => {
+          this.removeEventStatus(eventStatus)
+        })
+    })
+  }
+}
+
+// 使用 RequestInstance
+
+const service = new RequestInstance()
