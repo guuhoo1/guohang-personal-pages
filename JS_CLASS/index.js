@@ -70,3 +70,7 @@ class Rabbit extends Animal {}
 
 const rabbit = new Rabbit()
 rabbit.run()
+
+// 背後運作的原理是，JavaScript Engine會幫你把 Rabbit.prototype 的 [[Prototype]] 設為 Animal.prototype，
+
+// 亦即 Rabbit.prototype.__proto__ = Animal.prototype;
