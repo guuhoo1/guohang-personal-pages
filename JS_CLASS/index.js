@@ -66,7 +66,13 @@ class Animal {
 }
 
 // 兔子 rabbit继承Animal的方法
-class Rabbit extends Animal {}
+class Rabbit extends Animal {
+  run() {
+    // 在Rabbit子類別的 run() 方法內呼叫Animal類別的 run() 方法：
+    super.run()
+    console.log('Rabbit jump!')
+  }
+}
 
 const rabbit = new Rabbit()
 rabbit.run()
