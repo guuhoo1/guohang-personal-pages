@@ -54,3 +54,19 @@ const goods_Article = new Article([
 ])
 
 console.log(goods_Article.article.sort(Article.compare))
+
+// extends 继承Class
+// 构造一个 Animal Class
+class Animal {
+  // 公共方法
+  run() {
+    // 都会跑
+    console.log('Running')
+  }
+}
+
+// 兔子 rabbit继承Animal的方法
+class Rabbit extends Animal {}
+
+const rabbit = new Rabbit()
+rabbit.run()
