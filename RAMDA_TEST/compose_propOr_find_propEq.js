@@ -1,3 +1,8 @@
+/**
+ * Calculates the age of a person named 'james' from the given array of objects.
+ * @param {Array} arr - The array of objects.
+ * @returns {number} - The age of 'james' or 0 if not found.
+ */
 const { compose, find, propOr, propEq } = require('ramda')
 
 const temp = [
