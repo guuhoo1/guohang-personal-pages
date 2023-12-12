@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Family Tree with G6</title>
+    <script src="https://cdn.jsdelivr.net/npm/@antv/g6@3.6.10/dist/g6.min.js"></script>
+  </head>
+  <body>
+    <div id="family-tree-container"></div>
+
+    <script>
+      // 创建家庭族谱数据
+      var data = {
+        nodes: [
+          { id: 'grandfather', label: 'Grandfather', avatarEndpoint: 'api/avatar/grandfather' },
+          { id: 'father', label: 'Father', avatarEndpoint: 'api/avatar/father' },
+          { id: 'you', label: 'You', avatarEndpoint: 'api/avatar/you' },
+          { id: 'sibling', label: 'Sibling', avatarEndpoint: 'api/avatar/sibling' },
+          { id: 'uncle', label: 'Uncle', avatarEndpoint: 'api/avatar/uncle' }
+        ],
+        edges: [
+          { source: 'grandfather', target: 'father' },
+          { source: 'father', target: 'you' },
+          { source: 'father', target: 'sibling' },
+          { source: 'grandfather', target: 'uncle' }
+        ]
+      }
+
+      // 创建 G6 图实例
+      const graph = new G6.Graph({
+        container: 'family-tree-container',
+        width: 800,
+        height: 400,
+        modes: {
+          default: ['drag-canvas', 'zoom-canvas']
+        },
+        layout: {
+          type: 'dagre',
+          rankdir: 'TB',
+          align: 'UL',
+          nodesep: 20,
+          ranksep: 50
+        },
+        defaultNode: {
+          shape: 'circle',
+          size: [80],
+          style: {
+            fill: '#5B8FF9',
+            stroke: '#5B8FF9'
+          },
+          labelCfg: {
+            style: {
+              fill: '#fff',
+              fontSize: 12
+            }
+          },
+          // 添加异步加载头像的处理
+          async draw(cfg, group) {
+            const r = 40 // 节点半径
+            const avatarEndpoint = cfg.avatarEndpoint // 获取头像接口地址
+            const shape = group.addShape('circle', {
+              attrs: {
+                x: 0,
+                y: 0,
+                r: r,
+                fill: cfg.style.fill
+              },
+              name: 'circle-shape'
+            })
+
+            // 异步加载头像
+            const img = await loadImage(avatarEndpoint)
+
+            // 添加头像
+            group.addShape('image', {
+              attrs: {
+                x: -r,
+                y: -r,
+                width: r * 2,
+                height: r * 2,
+                img: img
+              },
+              name: 'image-shape'
+            })
+
+            return shape
+          }
+        },
+        defaultEdge: {
+          shape: 'cubic-horizontal',
+          style: {
+            stroke: '#A3B1BF'
+          }
+        }
+      })
+
+      // 异步加载图片的辅助函数
+      async function loadImage(url) {
+        return new Promise((resolve, reject) => {
+          const img = new Image()
+          img.onload = () => resolve(img)
+          img.onerror = reject
+          img.src = url
+        })
+      }
+
+      // 渲染家庭族谱关系图
+      graph.data(data)
+      graph.render()
+    </script>
+  </body>
+</html>
